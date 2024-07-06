@@ -10,10 +10,25 @@
         color: blue;
         text-decoration: none;
       }
+      code {
+        font-family: monospace;
+        background: #ccc;
+        border-radius: 3pt;
+      }
     </style>
   </head>
   <body>
     <h1><a href="/">~dcaa32</a></h1>
-    <h2>RegreSSHion</h2>
+    <h2>RegreSSHion (CVE-2024-6387)</h2>
+    <img src="https://ik.imagekit.io/qualys/wp-content/uploads/2024/06/Q-regreSSHion-1200x628-1-1070x560.jpg"/>
+    <p>RegreSSHion is a buffer overflow vulnerability in installd in iOS 12.3.3 to 12.5.7. It is generally used together with the WebKit JSC vulnerability CVE-2018-4416.</p>
+    <h3>The vulnerability</h3>
+    <p>This is a vulnerability in the AppInstall endpoint. The <code>PP_NAME</code> field is <code>strcpy</code>'d without any length checking.</p>
+    <h3>Exploitation</h3>
+    <p>This vulnerability can be exploited by opening an <code>AF_UNIX</code> <code>SOCK_DGRAM</code> connection to <code>/tmp/installd.sock</code>.</p>
+    <ol>
+      <li>Start the app installation process as usual.</li>
+      <li>At the stage of sending the provisioning profile/app signature, the part after the 512-byte buffer that <code>PP_NAME</code> is copied to is a 32-bit pointer to a return point.<br/>Set that value to a pointer to the shellcode. (The shellcode can be stored in the 512-byte buffer - the address of the buffer is <code>0x8f1054c2</code>.)</li>
+    </ol>
   </body>
 </html>
